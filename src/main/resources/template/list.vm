@@ -1,2 +1,3 @@
-Welcome $id to Javayou.com!
-today is $user.
+Welcome $username to Javayou.com!
+password is $password.
+age is ${age}
