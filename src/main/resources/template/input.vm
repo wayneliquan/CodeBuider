@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" content="text/html; charset=utf-8">
+  <title th:text="(${target}#[[ == null ? '添加' : '修改')+]]#'${title}'"></title>
+
+  <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/bootstrap/bootstrap-datetimepicker.min.css}">
+  <link rel="stylesheet" th:href="@{/css/common/form.css}">
+
+  <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+  <script type="text/javascript" th:src="@{/js/jquery.validate.min.js}"></script>
+  <script type="text/javascript" th:src="@{/js/jquery.form.min.js}"></script>
+  <script type="text/javascript" th:src="@{/js/bootstrap/bootstrap.min.js}"></script>
+  <script type="text/javascript" th:src="@{/js/bootstrap/bootstrap-datetimepicker.min.js}"></script>
+  <script type="text/javascript" th:src="@{/js/bootstrap/bootstrap-datetimepicker.zh-CN.js}"></script>
+
+</head>
+<body>
+<h3 class="text-center" th:text="#[[(${target} == null ? '添加' : '修改')+]]#'${title}'"></h3>
+<form id="form" class="form-horizontal col-md-6 col-md-offset-4">
+
+  <div class="from-group">
+    <div class="col-md-5 col-md-offset-3">
+      <button type="submit" class="btn btn-success">提 交</button>
+    </div>
+  </div>
+</form>
+<script>
+  $(function () {
+    $("#type").change(function () {
+      var val = $(this).val();
+      if (val == 1) {
+        $("#maxGrantedCount").val(0);
+        $("#maxGrantedCount").parent().parent().hide();
+      } else {
+        $("#maxGrantedCount").val(1);
+        $("#maxGrantedCount").parent().parent().show();
+      }
+    });
+  });
+  $('#form_datetime_NotBefore').datetimepicker({
+    language: 'zh-CN',
+    format: 'yyyy-mm-dd',
+    weekStart: 1,
+    autoclose: true,
+    startView: 2,
+    minView: 2,
+    todayBtn: true,
+    todayHighlight: true,
+    keyboardNavigation: true,
+    forceParse: true,
+    showMeridian: true,
+    startDate: new Date()
+  }).on('hide', function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    var startTime = event.date;
+    $("#form_datetime_dateInvalidated").datetimepicker('setStartDate',startTime);
+  });
+
+  $('#form_datetime_dateInvalidated').datetimepicker({
+    language: 'zh-CN',
+    format: 'yyyy-mm-dd',
+    weekStart: 1,
+    autoclose: true,
+    startView: 2,
+    minView: 2,
+    todayBtn: true,
+    todayHighlight: true,
+    keyboardNavigation: true,
+    forceParse: true,
+    showMeridian: true,
+    startDate: new Date()
+  }).on('hide', function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    var endTime = event.date;
+    $("#form_datetime_NotBefore").datetimepicker('setEndDate',endTime);
+  });
+
+  $("form").validate({
+    submitHandler: function(form) {
+      $(form).ajaxSubmit({
+        url: "save",
+        type: "POST",
+        success: function (msg) {
+          alert(msg.message);
+//                    $("form")[0].reset();
+          window.location.reload();
+        }
+      });
+    },
+    rules: {
+      subject: "required",
+      type: "required",
+      product: "required",
+      dateSigned: {
+        required: true,
+        date: true
+      },
+      dateNotBefore: {
+        required: true,
+        date: true
+      },
+      dateInvalidated: {
+        required: true,
+        date: true
+      },
+      dateNotAfter: {
+        required: true,
+        date: true
+      },
+
+      maxGrantedCount: {
+        required: true,
+        digits: true,
+        min: function () {
+          if ($("#type").val() == 1) {
+            return 0;
+          } else {
+            return 1;
+          }
+        }
+      },
+      status: "required",
+    },
+    onkeyup: false,
+    onclick: false,
+    errorClass: "red",
+    errorPlacement:function(error, element) {
+      if ($(element).parent().hasClass("input-group")) {
+        $(error).insertAfter($(element).parent());
+      } else {
+        $(error).insertAfter($(element));
+      }
+    },
+    highlight: function(element, errorClass) {
+      if ($(element).parent().hasClass("input-group")) {
+        $(element).parent().shake(3, 5, 150);
+      } else {
+        $(element).shake(3, 5, 150);
+      }
+    }
+  });
+</script>
+</body>
+</html>

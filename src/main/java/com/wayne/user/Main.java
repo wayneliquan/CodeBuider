@@ -1,7 +1,5 @@
 package com.wayne.user;
 
-import javafx.scene.control.Tab;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 

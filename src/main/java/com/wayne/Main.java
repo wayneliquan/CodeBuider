@@ -102,8 +102,8 @@ public class Main {
         VelocityContext context = new VelocityContext();
         //向VelocityContext中放入键值
         context.put("username", "张三");
-        context.put("password", "123456789");
-        context.put("age", "20");
+//        context.put("password", "123456789");
+//        context.put("age", "20");
         File target = new File("list.html");
         VelocityUtil.fillFile(context, target, "list.vm");
     }

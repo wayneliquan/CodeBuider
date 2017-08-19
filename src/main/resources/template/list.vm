@@ -1,3 +1,56 @@
-Welcome $username to Javayou.com!
-password is $password.
-age is ${age}
+<!DOCTYPE HTML>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" content="text/html; charset=utf-8">
+  <title>${title}列表</title>
+  <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+  <!-- bootstrap -->
+  <link rel="stylesheet" href="../../static/css/bootstrap/bootstrap.min.css"
+        th:href="@{/css/bootstrap/bootstrap.min.css}">
+</head>
+<body>
+<div>
+  <div>
+    <p class="text-center text-muted h2">${title}列表</p>
+  </div>
+  <div>
+    <hr width="80%">
+    <table th:if="#[[${not #lists.isEmpty(licenseList)}]]#" class="table table-bordered text-center">
+      <thead>
+      <tr>
+        <th class="text-center">序号</th>
+#foreach(${entityFiledName} in $!{entityFiledNameList})
+        <th class="text-center">$!{entityFiledName}</th>
+#end
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="#[[entity, stat:${entityList}]]#">
+        <td th:text="#[[${stat.index + 1}]]#"></td>
+#foreach($entityFiled in ${entityFiledList})
+        <td th:text="#[[${entity.]]#${entityFiled}"></td>
+#end
+      </tr>
+      </tbody>
+    </table>
+    <p class="text-center" th:if="#[[${#lists.isEmpty(entityList)}]]#">没有数据!</p>
+  </div>
+</div>
+<script>
+  function deleteById(id) {
+    var flag = confirm('确定删除该记录?');
+    if (flag) {
+      var url = 'deleteById?id=' + id;
+      $.get(url, function (data) {
+        if (data) {
+          alert(data.message);
+          if (data.success) {
+            window.location.reload();
+          }
+        }
+      });
+    }
+  }
+</script>
+</body>
+</html>
